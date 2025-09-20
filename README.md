@@ -1,73 +1,94 @@
-# Welcome to your Lovable project
+# IELTS Writing Practice
 
-## Project info
+IELTS Academic Writing practice application with timed exercises and AI-powered feedback for Task 1 and Task 2.
 
-**URL**: https://lovable.dev/projects/201b6dc2-eda4-40e6-9f47-43438c8484ed
+## Features
 
-## How can I edit this code?
+- **Timed Practice**: Complete writing tasks with realistic time constraints
+- **Two Task Types**: Practice both IELTS Task 1 (data description) and Task 2 (essay writing)
+- **Word Count Tracking**: Real-time word count with minimum requirements
+- **AI Feedback**: Get detailed feedback with band scores for each criterion
+- **Firebase Authentication**: Login with Google to save your progress
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+- **Frontend**: React 18, TypeScript, Vite
+- **UI Library**: shadcn/ui with Tailwind CSS
+- **Authentication**: Firebase Auth
+- **State Management**: React hooks
+- **Development**: ESLint, TypeScript
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/201b6dc2-eda4-40e6-9f47-43438c8484ed) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js (v18 or higher)
+- npm or yarn
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd ielts-frontend
+```
 
-Follow these steps:
+2. Install dependencies:
+```bash
+npm install
+```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+3. Set up Firebase:
+   - Create a Firebase project at https://console.firebase.google.com
+   - Enable Google Authentication
+   - Copy your Firebase config to `.env`:
+```bash
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+4. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Available Scripts
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
 
-**Use GitHub Codespaces**
+## Project Structure
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```
+src/
+├── components/
+│   ├── ui/              # shadcn/ui components
+│   ├── PartSelector.tsx # Task selection component
+│   ├── QuestionList.tsx # Question browser
+│   ├── EssayWriter.tsx  # Writing interface
+│   ├── EssayReview.tsx  # Feedback display
+│   └── LoginButton.tsx  # Authentication component
+├── contexts/
+│   └── AuthContext.tsx  # Firebase auth context
+├── lib/
+│   ├── firebase.ts      # Firebase configuration
+│   └── utils.ts         # Utility functions
+└── pages/
+    └── Index.tsx        # Main application page
+```
 
-## What technologies are used for this project?
+## Contributing
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/201b6dc2-eda4-40e6-9f47-43438c8484ed) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run linting: `npm run lint`
+5. Commit your changes
+6. Push to your fork
+7. Create a Pull Request
