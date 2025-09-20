@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, PenTool, Clock, Target } from "lucide-react";
+import { LoginButton } from "@/components/LoginButton";
 import PartSelector from "@/components/PartSelector";
 import QuestionList from "@/components/QuestionList";
 import EssayWriter from "@/components/EssayWriter";
@@ -139,11 +140,12 @@ const Index = () => {
               </div>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
               <Badge variant="secondary" className="hidden sm:flex">
                 <BookOpen className="w-3 h-3 mr-1" />
                 Academic Writing
               </Badge>
+              <LoginButton />
             </div>
           </div>
         </div>
