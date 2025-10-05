@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Clock, FileText, Play, Pause, Square, AlertCircle } from "lucide-react";
 import { Question, Essay } from "@/pages/Index";
+import { useAuth } from "@/contexts/AuthContext";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -15,6 +16,7 @@ interface EssayWriterProps {
 }
 
 const EssayWriter = ({ question, onEssaySubmit, onBack }: EssayWriterProps) => {
+  const { currentUser } = useAuth();
   const [content, setContent] = useState("");
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
@@ -65,12 +67,14 @@ const EssayWriter = ({ question, onEssaySubmit, onBack }: EssayWriterProps) => {
       wordCount,
       timeSpent: timeElapsed
     };
-    
+
     try {
+      const token = await currentUser?.getIdToken();
       const response = await fetch(API_BASE_URL+'/write/review', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }),
         },
         body: JSON.stringify({
           content: essay.content,
