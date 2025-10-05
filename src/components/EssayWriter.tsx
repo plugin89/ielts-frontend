@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Clock, FileText, Play, Pause, Square, AlertCircle } from "lucide-react";
 import { Question, Essay } from "@/pages/Index";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 interface EssayWriterProps {
   question: Question;
   onEssaySubmit: (essay: Essay) => void;
@@ -65,13 +67,14 @@ const EssayWriter = ({ question, onEssaySubmit, onBack }: EssayWriterProps) => {
     };
     
     try {
-      const response = await fetch('https://ielts-backend-tl5u.onrender.com/write/review', {
+      const response = await fetch(API_BASE_URL+'/write/review', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           content: essay.content,
+          topic: question.description,
           questionId: essay.questionId,
           wordCount: essay.wordCount,
           timeSpent: essay.timeSpent,
