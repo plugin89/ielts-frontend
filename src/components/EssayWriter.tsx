@@ -13,9 +13,10 @@ interface EssayWriterProps {
   question: Question;
   onEssaySubmit: (essay: Essay) => void;
   onBack: () => void;
+  part: "part1_general" | "part1_academic" | "part2";
 }
 
-const EssayWriter = ({ question, onEssaySubmit, onBack }: EssayWriterProps) => {
+const EssayWriter = ({ question, onEssaySubmit, onBack, part }: EssayWriterProps) => {
   const { currentUser } = useAuth();
   const [content, setContent] = useState("");
   const [timeElapsed, setTimeElapsed] = useState(0);
@@ -77,14 +78,12 @@ const EssayWriter = ({ question, onEssaySubmit, onBack }: EssayWriterProps) => {
           ...(token && { 'Authorization': `Bearer ${token}` }),
         },
         body: JSON.stringify({
-          content: essay.content,
-          topic: question.description,
+          user_writing: essay.content,
           questionId: essay.questionId,
+          topic: question.title,
           wordCount: essay.wordCount,
-          timeSpent: essay.timeSpent,
-          questionType: question.type,
-          wordLimit: question.wordLimit,
-          timeLimit: question.timeLimit
+          timespent: essay.timeSpent,
+          questionType: part === "part2" ? "task2" : "task1"
         })
       });
       

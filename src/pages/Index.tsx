@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, PenTool, Clock, Target } from "lucide-react";
 import { LoginButton } from "@/components/LoginButton";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import PartSelector from "@/components/PartSelector";
 import QuestionList from "@/components/QuestionList";
 import EssayWriter from "@/components/EssayWriter";
 import EssayReview from "@/components/EssayReview";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-export type WritingPart = "part1" | "part2";
+export type WritingPart = "part1_general" | "part1_academic" | "part2";
 export type AppState = "home" | "questions" | "writing" | "review";
 
 export interface Question {
@@ -42,15 +44,15 @@ export interface EssayFeedback {
 }
 
 const Index = () => {
+  const { t } = useLanguage();
   const [currentState, setCurrentState] = useState<AppState>("home");
-  const [selectedPart, setSelectedPart] = useState<WritingPart | null>(null);
+  const [selectedPart, setSelectedPart] = useState<WritingPart>("part1_general");
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
   const [currentEssay, setCurrentEssay] = useState<Essay | null>(null);
   const [currentFeedback, setCurrentFeedback] = useState<EssayFeedback | null>(null);
 
   const handlePartSelect = (part: WritingPart) => {
     setSelectedPart(part);
-    setCurrentState("questions");
   };
 
   const handleQuestionSelect = (question: Question) => {
@@ -66,21 +68,20 @@ const Index = () => {
 
   const handleBackToHome = () => {
     setCurrentState("home");
-    setSelectedPart(null);
     setSelectedQuestion(null);
     setCurrentEssay(null);
     setCurrentFeedback(null);
   };
 
   const handleBackToQuestions = () => {
-    setCurrentState("questions");
+    setCurrentState("home");
     setSelectedQuestion(null);
     setCurrentEssay(null);
     setCurrentFeedback(null);
   };
 
   const handleNewEssay = () => {
-    setCurrentState("questions");
+    setCurrentState("home");
     setSelectedQuestion(null);
     setCurrentEssay(null);
     setCurrentFeedback(null);
@@ -89,13 +90,11 @@ const Index = () => {
   const renderContent = () => {
     switch (currentState) {
       case "home":
-        return <PartSelector onPartSelect={handlePartSelect} />;
-      case "questions":
         return (
           <QuestionList
-            part={selectedPart!}
+            part={selectedPart}
             onQuestionSelect={handleQuestionSelect}
-            onBack={handleBackToHome}
+            onPartSelect={handlePartSelect}
           />
         );
       case "writing":
@@ -117,7 +116,13 @@ const Index = () => {
           />
         );
       default:
-        return <PartSelector onPartSelect={handlePartSelect} />;
+        return (
+          <QuestionList
+            part={selectedPart}
+            onQuestionSelect={handleQuestionSelect}
+            onPartSelect={handlePartSelect}
+          />
+        );
     }
   };
 
@@ -127,24 +132,21 @@ const Index = () => {
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div 
-              className="flex items-center gap-3 cursor-pointer transition-smooth hover:opacity-80" 
+            <div
+              className="flex items-center gap-3 cursor-pointer transition-smooth hover:opacity-80"
               onClick={handleBackToHome}
             >
               <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center shadow-elegant">
                 <PenTool className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold">IELTS Writing Practice</h1>
-                <p className="text-sm text-muted-foreground">Master your writing skills</p>
+                <h1 className="text-xl font-bold">{t('header.title')}</h1>
+                <p className="text-sm text-muted-foreground">{t('header.subtitle')}</p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-4">
-              <Badge variant="secondary" className="hidden sm:flex">
-                <BookOpen className="w-3 h-3 mr-1" />
-                Academic Writing
-              </Badge>
+              <LanguageSelector />
               <LoginButton />
             </div>
           </div>
@@ -161,16 +163,16 @@ const Index = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">
-              Practice makes perfect. Keep writing to improve your IELTS score.
+              {t('footer.practice')}
             </p>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Clock className="w-4 h-4" />
-                <span>Timed Practice</span>
+                <span>{t('footer.timedPractice')}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Target className="w-4 h-4" />
-                <span>AI Feedback</span>
+                <span>{t('footer.aiFeedback')}</span>
               </div>
             </div>
           </div>

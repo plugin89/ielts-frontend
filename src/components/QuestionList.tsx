@@ -1,20 +1,64 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Clock, FileText, BarChart3, Users, Globe } from "lucide-react";
+import { Clock, FileText, BarChart3 } from "lucide-react";
 import { WritingPart, Question } from "@/pages/Index";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface QuestionListProps {
   part: WritingPart;
   onQuestionSelect: (question: Question) => void;
-  onBack: () => void;
+  onPartSelect: (part: WritingPart) => void;
 }
 
-const QuestionList = ({ part, onQuestionSelect, onBack }: QuestionListProps) => {
-  const questions: Record<WritingPart, Question[]> = {
-    part1: [
+const QuestionList = ({ part, onQuestionSelect, onPartSelect }: QuestionListProps) => {
+  const { t } = useLanguage();
+  const [task1GeneralType, setTask1GeneralType] = useState<"past" | "mock">("past");
+  const [task1AcademicType, setTask1AcademicType] = useState<"past" | "mock">("past");
+  const [task2QuestionType, setTask2QuestionType] = useState<"past" | "mock">("past");
+
+  const questions = {
+    part1_general_past: [
       {
-        id: "p1-charts",
+        id: "p1g-letter1",
+        title: "Complaint Letter",
+        description: "You recently purchased a product online, but it arrived damaged. Write a letter to the company complaining about the issue and requesting a replacement or refund.",
+        timeLimit: 20,
+        wordLimit: 150,
+        type: "Formal Letter"
+      },
+      {
+        id: "p1g-letter2",
+        title: "Request Letter",
+        description: "You are planning to visit a friend in another country. Write a letter to your friend requesting information about the best time to visit and asking for suggestions on places to see.",
+        timeLimit: 20,
+        wordLimit: 150,
+        type: "Informal Letter"
+      }
+    ],
+    part1_general_mock: [
+      {
+        id: "p1g-letter3",
+        title: "Invitation Letter",
+        description: "You are organizing a surprise birthday party for a colleague. Write a letter to other colleagues inviting them to the party and providing details about the event.",
+        timeLimit: 20,
+        wordLimit: 150,
+        type: "Semi-formal Letter"
+      },
+      {
+        id: "p1g-letter4",
+        title: "Apology Letter",
+        description: "You borrowed a book from a friend but accidentally damaged it. Write a letter apologizing for the damage and offering to replace or repair the book.",
+        timeLimit: 20,
+        wordLimit: 150,
+        type: "Informal Letter"
+      }
+    ],
+    part1_academic_past: [
+      {
+        id: "p1a-charts",
         title: "Sales Data Analysis",
         description: "The chart shows the sales figures for three different product categories over a 12-month period. Summarize the information by selecting and reporting the main features.",
         timeLimit: 20,
@@ -22,15 +66,17 @@ const QuestionList = ({ part, onQuestionSelect, onBack }: QuestionListProps) => 
         type: "Bar Chart"
       },
       {
-        id: "p1-process",
+        id: "p1a-process",
         title: "Coffee Production Process",
         description: "The diagram illustrates the process of coffee production from bean to cup. Describe the process shown in the diagram.",
         timeLimit: 20,
         wordLimit: 150,
         type: "Process Diagram"
-      },
+      }
+    ],
+    part1_academic_mock: [
       {
-        id: "p1-table",
+        id: "p1a-table",
         title: "University Enrollment Statistics",
         description: "The table shows the number of students enrolled in different university programs between 2019 and 2023. Summarize the key trends.",
         timeLimit: 20,
@@ -38,7 +84,7 @@ const QuestionList = ({ part, onQuestionSelect, onBack }: QuestionListProps) => 
         type: "Table"
       },
       {
-        id: "p1-map",
+        id: "p1a-map",
         title: "Town Development Plans",
         description: "The maps show the changes planned for a town center. Compare the current layout with the proposed changes.",
         timeLimit: 20,
@@ -46,7 +92,7 @@ const QuestionList = ({ part, onQuestionSelect, onBack }: QuestionListProps) => 
         type: "Maps"
       }
     ],
-    part2: [
+    part2_past: [
       {
         id: "p2-opinion",
         title: "Technology and Education",
@@ -62,7 +108,9 @@ const QuestionList = ({ part, onQuestionSelect, onBack }: QuestionListProps) => 
         timeLimit: 40,
         wordLimit: 250,
         type: "Problem/Solution"
-      },
+      }
+    ],
+    part2_mock: [
       {
         id: "p2-advantages",
         title: "Working from Home",
@@ -97,142 +145,164 @@ const QuestionList = ({ part, onQuestionSelect, onBack }: QuestionListProps) => 
     }
   };
 
-  const currentPartInfo = partInfo[part];
-  const currentQuestions = questions[part];
-  const IconComponent = currentPartInfo.icon;
-
-  return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="outline" size="sm" onClick={onBack} className="shrink-0">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back
-        </Button>
-        
-        <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 ${currentPartInfo.color} rounded-lg flex items-center justify-center shadow-card`}>
-            <IconComponent className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">{currentPartInfo.title}</h1>
-            <p className="text-muted-foreground">{currentPartInfo.subtitle}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Instructions */}
-      <Card className="bg-gradient-to-r from-accent/10 to-primary/10 border-accent/20">
-        <CardHeader>
-          <CardTitle className="text-lg">Instructions</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid sm:grid-cols-3 gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-primary" />
-              <span><strong>{currentQuestions[0]?.timeLimit} minutes</strong> time limit</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-primary" />
-              <span><strong>{currentQuestions[0]?.wordLimit}+</strong> words minimum</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-primary" />
-              <span><strong>Academic</strong> register</span>
-            </div>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            {part === "part1" 
-              ? "Choose a visual information task below. You'll need to describe, summarize or explain the information clearly and accurately."
-              : "Select an essay topic below. Present a well-structured argument with clear examples and logical reasoning."
-            }
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Questions Grid */}
-      <div className="grid gap-4">
-        {currentQuestions.map((question, index) => (
-          <Card 
+  const renderQuestionList = (questionList: Question[]) => {
+    return (
+      <div className="grid gap-3">
+        {questionList.map((question, index) => (
+          <Card
             key={question.id}
-            className="group hover:shadow-elegant transition-smooth cursor-pointer border-2 hover:border-primary/20"
+            className="group hover:shadow-lg transition-all cursor-pointer border hover:border-primary/50"
             onClick={() => onQuestionSelect(question)}
           >
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center gap-3">
-                    <Badge variant="outline" className="text-xs font-medium">
-                      Question {index + 1}
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      {question.type}
-                    </Badge>
-                  </div>
-                  <CardTitle className="text-lg group-hover:text-primary transition-smooth">
-                    {question.title}
-                  </CardTitle>
-                </div>
-                
-                <div className="flex items-center gap-2 text-sm text-muted-foreground shrink-0 ml-4">
-                  <Clock className="w-4 h-4" />
-                  <span>{question.timeLimit}min</span>
-                </div>
-              </div>
-            </CardHeader>
-            
-            <CardContent>
-              <CardDescription className="text-base leading-relaxed mb-4">
+            <CardContent className="p-4">
+              <CardDescription className="text-sm leading-relaxed text-foreground">
                 {question.description}
               </CardDescription>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <FileText className="w-4 h-4" />
-                    {question.wordLimit}+ words
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Globe className="w-4 h-4" />
-                    Academic level
-                  </span>
-                </div>
-                
-                <Button 
-                  size="sm" 
-                  className="group-hover:gradient-primary transition-smooth"
-                >
-                  Start Writing
-                </Button>
-              </div>
             </CardContent>
           </Card>
         ))}
       </div>
+    );
+  };
 
-      {/* Tips */}
-      <Card className="bg-muted/50">
+  return (
+    <div className="max-w-6xl mx-auto space-y-6">
+      {/* Header */}
+      <div className="text-center space-y-2">
+        <h1 className="text-3xl font-bold">{t('home.title')}</h1>
+        <p className="text-muted-foreground">{t('home.subtitle')}</p>
+      </div>
+
+      {/* Task Selection Cards */}
+      <div className="grid md:grid-cols-3 gap-6 mb-8">
+        {/* Task 1 (G) Card */}
+        <Card
+          className={`cursor-pointer transition-all ${
+            part === "part1_general" ? "border-primary border-2 shadow-lg" : "border-2 hover:border-primary/50"
+          }`}
+          onClick={() => onPartSelect("part1_general")}
+        >
+          <CardHeader className="text-center pb-4">
+            <div className="flex justify-center mb-3">
+              <FileText className="w-12 h-12 text-primary" />
+            </div>
+            <CardTitle className="text-2xl">{t('task.1g.title')}</CardTitle>
+            <CardDescription className="text-base">{t('task.1g.desc')}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            <div className="flex items-center gap-2">
+              <span>• {t('task.minWords', '150')}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>• {t('task.timeRecommended', '20')}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>• {t('task.score', '33')}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Task 1 (A) Card */}
+        <Card
+          className={`cursor-pointer transition-all ${
+            part === "part1_academic" ? "border-primary border-2 shadow-lg" : "border-2 hover:border-primary/50"
+          }`}
+          onClick={() => onPartSelect("part1_academic")}
+        >
+          <CardHeader className="text-center pb-4">
+            <div className="flex justify-center mb-3">
+              <BarChart3 className="w-12 h-12 text-primary" />
+            </div>
+            <CardTitle className="text-2xl">{t('task.1a.title')}</CardTitle>
+            <CardDescription className="text-base">{t('task.1a.desc')}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            <div className="flex items-center gap-2">
+              <span>• {t('task.minWords', '150')}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>• {t('task.timeRecommended', '20')}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>• {t('task.score', '33')}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Task 2 Card */}
+        <Card
+          className={`cursor-pointer transition-all ${
+            part === "part2" ? "border-primary border-2 shadow-lg" : "border-2 hover:border-primary/50"
+          }`}
+          onClick={() => onPartSelect("part2")}
+        >
+          <CardHeader className="text-center pb-4">
+            <div className="flex justify-center mb-3">
+              <FileText className="w-12 h-12 text-primary" />
+            </div>
+            <CardTitle className="text-2xl">{t('task.2.title')}</CardTitle>
+            <CardDescription className="text-base">{t('task.2.desc')}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            <div className="flex items-center gap-2">
+              <span>• {t('task.minWords', '250')}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>• {t('task.timeRecommended', '40')}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>• {t('task.score', '67')}</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Question Selection */}
+      <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Tips for Success</CardTitle>
+          <CardTitle className="text-xl">{t('questions.title')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid sm:grid-cols-2 gap-4 text-sm">
-            {part === "part1" ? (
-              <>
-                <div>• Focus on the most important trends and patterns</div>
-                <div>• Use appropriate vocabulary for describing data</div>
-                <div>• Don't include personal opinions or speculation</div>
-                <div>• Structure your response with clear paragraphs</div>
-              </>
-            ) : (
-              <>
-                <div>• Plan your essay structure before writing</div>
-                <div>• Use clear topic sentences for each paragraph</div>
-                <div>• Support your arguments with relevant examples</div>
-                <div>• Write a strong conclusion that summarizes your position</div>
-              </>
-            )}
-          </div>
+          {part === "part1_general" ? (
+            <Tabs value={task1GeneralType} onValueChange={(value) => setTask1GeneralType(value as "past" | "mock")}>
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="past">{t('questions.past')}</TabsTrigger>
+                <TabsTrigger value="mock">{t('questions.mock')}</TabsTrigger>
+              </TabsList>
+              <TabsContent value="past">
+                {renderQuestionList(questions.part1_general_past)}
+              </TabsContent>
+              <TabsContent value="mock">
+                {renderQuestionList(questions.part1_general_mock)}
+              </TabsContent>
+            </Tabs>
+          ) : part === "part1_academic" ? (
+            <Tabs value={task1AcademicType} onValueChange={(value) => setTask1AcademicType(value as "past" | "mock")}>
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="past">{t('questions.past')}</TabsTrigger>
+                <TabsTrigger value="mock">{t('questions.mock')}</TabsTrigger>
+              </TabsList>
+              <TabsContent value="past">
+                {renderQuestionList(questions.part1_academic_past)}
+              </TabsContent>
+              <TabsContent value="mock">
+                {renderQuestionList(questions.part1_academic_mock)}
+              </TabsContent>
+            </Tabs>
+          ) : (
+            <Tabs value={task2QuestionType} onValueChange={(value) => setTask2QuestionType(value as "past" | "mock")}>
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="past">{t('questions.past')}</TabsTrigger>
+                <TabsTrigger value="mock">{t('questions.mock')}</TabsTrigger>
+              </TabsList>
+              <TabsContent value="past">
+                {renderQuestionList(questions.part2_past)}
+              </TabsContent>
+              <TabsContent value="mock">
+                {renderQuestionList(questions.part2_mock)}
+              </TabsContent>
+            </Tabs>
+          )}
         </CardContent>
       </Card>
     </div>
