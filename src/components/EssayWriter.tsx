@@ -78,12 +78,14 @@ const EssayWriter = ({ question, onEssaySubmit, onBack, part }: EssayWriterProps
           ...(token && { 'Authorization': `Bearer ${token}` }),
         },
         body: JSON.stringify({
-          user_writing: essay.content,
+          content: essay.content,
+          topic: question.description,
           questionId: essay.questionId,
-          topic: question.title,
           wordCount: essay.wordCount,
-          timespent: essay.timeSpent,
-          questionType: part === "part2" ? "task2" : "task1"
+          timeSpent: essay.timeSpent,
+          questionType: question.type,
+          wordLimit: question.wordLimit,
+          timeLimit: question.timeLimit
         })
       });
       
