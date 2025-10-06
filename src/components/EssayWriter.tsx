@@ -25,6 +25,12 @@ const EssayWriter = ({ question, onEssaySubmit, onBack, part }: EssayWriterProps
 
   const wordCount = content.trim() === "" ? 0 : content.trim().split(/\s+/).length;
   const isWordCountMet = wordCount >= question.wordLimit;
+
+  // Maximum word count is same as wordLimit
+  const maxWordCount = question.wordLimit;
+  const isOverLimit = wordCount > maxWordCount;
+  const isOverMaxAllowed = wordCount > maxWordCount + 30;
+
   const timeLimit = question.timeLimit * 60; // Convert to seconds
   const timeRemaining = timeLimit - timeElapsed;
   const isTimeUp = timeRemaining <= 0;
@@ -102,7 +108,7 @@ const EssayWriter = ({ question, onEssaySubmit, onBack, part }: EssayWriterProps
     }
   };
 
-  const canSubmit = content.trim().length > 0;
+  const canSubmit = content.trim().length > 0 && !isOverMaxAllowed;
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -207,7 +213,9 @@ const EssayWriter = ({ question, onEssaySubmit, onBack, part }: EssayWriterProps
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="text-sm">
-                    <span className="font-semibold">{wordCount}</span>
+                    <span className={`font-semibold ${isOverLimit ? 'text-destructive' : ''}`}>
+                      {wordCount}
+                    </span>
                     <span className="text-muted-foreground">/{question.wordLimit} words</span>
                   </div>
                   <div className={`text-sm ${
@@ -215,8 +223,16 @@ const EssayWriter = ({ question, onEssaySubmit, onBack, part }: EssayWriterProps
                   }`}>
                     {isWordCountMet ? '✓ Word count met' : `${question.wordLimit - wordCount} more needed`}
                   </div>
+                  {isOverLimit && (
+                    <div className="flex items-center gap-1 text-destructive text-sm">
+                      <AlertCircle className="w-4 h-4" />
+                      {isOverMaxAllowed
+                        ? `Exceeded maximum by ${wordCount - maxWordCount - 30} words`
+                        : `Warning: ${wordCount - maxWordCount} over limit`}
+                    </div>
+                  )}
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   {isTimeUp && (
                     <div className="flex items-center gap-1 text-destructive text-sm">
@@ -224,8 +240,8 @@ const EssayWriter = ({ question, onEssaySubmit, onBack, part }: EssayWriterProps
                       Time exceeded
                     </div>
                   )}
-                  <Button 
-                    onClick={handleSubmit} 
+                  <Button
+                    onClick={handleSubmit}
                     disabled={!canSubmit}
                     className="gradient-primary"
                   >
