@@ -1,11 +1,12 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, FileText, BarChart3 } from "lucide-react";
+import { Clock, FileText, BarChart3, Plus } from "lucide-react";
 import { WritingPart, Question } from "@/pages/Index";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Textarea } from "@/components/ui/textarea";
 
 interface QuestionListProps {
   part: WritingPart;
@@ -18,6 +19,14 @@ const QuestionList = ({ part, onQuestionSelect, onPartSelect }: QuestionListProp
   const [task1GeneralType, setTask1GeneralType] = useState<"past" | "mock">("past");
   const [task1AcademicType, setTask1AcademicType] = useState<"past" | "mock">("past");
   const [task2QuestionType, setTask2QuestionType] = useState<"past" | "mock">("past");
+
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [customDescription, setCustomDescription] = useState("");
+  const [customQuestions, setCustomQuestions] = useState<Record<string, Question[]>>({
+    part1_general: [],
+    part1_academic: [],
+    part2: []
+  });
 
   const questions = {
     part1_general_past: [
@@ -145,7 +154,25 @@ const QuestionList = ({ part, onQuestionSelect, onPartSelect }: QuestionListProp
     }
   };
 
-  const renderQuestionList = (questionList: Question[]) => {
+  const handleStartWriting = () => {
+    if (!customDescription.trim()) return;
+
+    const partKey = part === "part1_general" ? "part1_general" : part === "part1_academic" ? "part1_academic" : "part2";
+    const newQuestion: Question = {
+      id: `custom-${Date.now()}`,
+      title: "Custom Question",
+      description: customDescription,
+      timeLimit: part === "part2" ? 40 : 20,
+      wordLimit: part === "part2" ? 250 : 150,
+      type: "Custom"
+    };
+
+    setCustomDescription("");
+    setShowCustomInput(false);
+    onQuestionSelect(newQuestion);
+  };
+
+  const renderQuestionList = (questionList: Question[], showAddButton: boolean = false) => {
     return (
       <div className="grid gap-3">
         {questionList.map((question, index) => (
@@ -161,6 +188,50 @@ const QuestionList = ({ part, onQuestionSelect, onPartSelect }: QuestionListProp
             </CardContent>
           </Card>
         ))}
+        {showAddButton && !showCustomInput && (
+          <Card
+            className="border-2 border-dashed hover:border-primary/50 cursor-pointer transition-all"
+            onClick={() => setShowCustomInput(true)}
+          >
+            <CardContent className="p-4 flex items-center justify-center gap-2 text-muted-foreground hover:text-primary">
+              <Plus className="w-5 h-5" />
+              <span className="text-sm font-medium">Add Custom Question</span>
+            </CardContent>
+          </Card>
+        )}
+        {showAddButton && showCustomInput && (
+          <Card className="border-2 border-primary">
+            <CardContent className="p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Custom Question</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setShowCustomInput(false);
+                    setCustomDescription("");
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+              <Textarea
+                placeholder="Paste or type your question here..."
+                className="min-h-[120px]"
+                value={customDescription}
+                onChange={(e) => setCustomDescription(e.target.value)}
+                autoFocus
+              />
+              <Button
+                onClick={handleStartWriting}
+                disabled={!customDescription.trim()}
+                className="w-full"
+              >
+                Start Writing
+              </Button>
+            </CardContent>
+          </Card>
+        )}
       </div>
     );
   };
@@ -270,10 +341,10 @@ const QuestionList = ({ part, onQuestionSelect, onPartSelect }: QuestionListProp
                 <TabsTrigger value="mock">{t('questions.mock')}</TabsTrigger>
               </TabsList>
               <TabsContent value="past">
-                {renderQuestionList(questions.part1_general_past)}
+                {renderQuestionList(questions.part1_general_past, true)}
               </TabsContent>
               <TabsContent value="mock">
-                {renderQuestionList(questions.part1_general_mock)}
+                {renderQuestionList(questions.part1_general_mock, true)}
               </TabsContent>
             </Tabs>
           ) : part === "part1_academic" ? (
@@ -283,10 +354,10 @@ const QuestionList = ({ part, onQuestionSelect, onPartSelect }: QuestionListProp
                 <TabsTrigger value="mock">{t('questions.mock')}</TabsTrigger>
               </TabsList>
               <TabsContent value="past">
-                {renderQuestionList(questions.part1_academic_past)}
+                {renderQuestionList(questions.part1_academic_past, true)}
               </TabsContent>
               <TabsContent value="mock">
-                {renderQuestionList(questions.part1_academic_mock)}
+                {renderQuestionList(questions.part1_academic_mock, true)}
               </TabsContent>
             </Tabs>
           ) : (
@@ -296,10 +367,10 @@ const QuestionList = ({ part, onQuestionSelect, onPartSelect }: QuestionListProp
                 <TabsTrigger value="mock">{t('questions.mock')}</TabsTrigger>
               </TabsList>
               <TabsContent value="past">
-                {renderQuestionList(questions.part2_past)}
+                {renderQuestionList(questions.part2_past, true)}
               </TabsContent>
               <TabsContent value="mock">
-                {renderQuestionList(questions.part2_mock)}
+                {renderQuestionList(questions.part2_mock, true)}
               </TabsContent>
             </Tabs>
           )}
