@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface EssayContentProps {
   essayContent: string;
@@ -55,6 +56,7 @@ const generateMockCorrections = (content: string): CorrectionData[] => {
 };
 
 const EssayContent = ({ essayContent, corrections }: EssayContentProps) => {
+  const { t } = useLanguage();
   const [showSimplified, setShowSimplified] = useState<{[key: number]: boolean}>({});
   const finalCorrections = corrections || generateMockCorrections(essayContent);
 
@@ -114,9 +116,9 @@ const EssayContent = ({ essayContent, corrections }: EssayContentProps) => {
   return (
     <Card className="border-l-4 border-l-primary">
       <CardHeader>
-        <CardTitle className="text-lg">Your Essay</CardTitle>
+        <CardTitle className="text-lg">{t('review.yourEssay')}</CardTitle>
         <CardDescription>
-          Words above your level are replaced with simpler synonyms. Click any sentence to toggle between original and rephrased versions.
+          {t('review.essayContentDesc')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -125,7 +127,7 @@ const EssayContent = ({ essayContent, corrections }: EssayContentProps) => {
         </div>
         {finalCorrections.length > 0 && (
           <div className="mt-4 text-xs text-muted-foreground">
-            Found {finalCorrections.length} suggestion{finalCorrections.length !== 1 ? 's' : ''} for simplification
+            {t(finalCorrections.length === 1 ? 'review.suggestionFound' : 'review.suggestionsFound', finalCorrections.length.toString())}
           </div>
         )}
       </CardContent>

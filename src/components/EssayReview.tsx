@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, FileText, Clock, Target, CheckCircle, AlertTriangle, BookOpen, Lightbulb } from "lucide-react";
 import { Question, Essay, EssayFeedback } from "@/pages/Index";
 import EssayContent from "@/components/EssayContent";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface EssayReviewProps {
   essay: Essay;
@@ -64,6 +65,7 @@ const generateMockFeedback = (essay: Essay, question: Question): EssayFeedback =
 };
 
 const EssayReview = ({ essay, question, feedback, onNewEssay, onBack }: EssayReviewProps) => {
+  const { t } = useLanguage();
   const finalFeedback = feedback || generateMockFeedback(essay, question);
   const timeSpentMinutes = Math.round(essay.timeSpent / 60);
   const isWithinTimeLimit = essay.timeSpent <= question.timeLimit * 60;
@@ -83,16 +85,16 @@ const EssayReview = ({ essay, question, feedback, onNewEssay, onBack }: EssayRev
         <div className="flex items-center gap-4">
           <Button variant="outline" size="sm" onClick={onBack}>
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Questions
+            {t('review.backToQuestions')}
           </Button>
-          
+
           <Badge variant="secondary">
             {question.type}
           </Badge>
         </div>
 
         <Button onClick={onNewEssay} className="gradient-primary">
-          Practice Another Question
+          {t('review.practiceAnother')}
         </Button>
       </div>
 
@@ -102,15 +104,15 @@ const EssayReview = ({ essay, question, feedback, onNewEssay, onBack }: EssayRev
           {/* Overall Score */}
           <Card className="text-center gradient-secondary border-accent/20">
             <CardHeader>
-              <CardTitle className="text-white">Overall Band Score</CardTitle>
+              <CardTitle className="text-white">{t('review.overallBandScore')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bold text-white mb-2">
                 {finalFeedback.overallScore}
               </div>
               <p className="text-white/80 text-sm">
-                {finalFeedback.overallScore >= 7 ? "Good" : 
-                 finalFeedback.overallScore >= 6 ? "Competent" : "Developing"}
+                {finalFeedback.overallScore >= 7 ? t('review.good') :
+                 finalFeedback.overallScore >= 6 ? t('review.competent') : t('review.developing')}
               </p>
             </CardContent>
           </Card>
@@ -120,13 +122,13 @@ const EssayReview = ({ essay, question, feedback, onNewEssay, onBack }: EssayRev
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <FileText className="w-5 h-5" />
-                Essay Statistics
+                {t('review.essayStatistics')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-muted-foreground">Word Count</p>
+                  <p className="text-muted-foreground">{t('review.wordCount')}</p>
                   <p className={`font-semibold ${
                     essay.wordCount >= question.wordLimit ? 'text-success' : 'text-warning'
                   }`}>
@@ -134,7 +136,7 @@ const EssayReview = ({ essay, question, feedback, onNewEssay, onBack }: EssayRev
                   </p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Time Spent</p>
+                  <p className="text-muted-foreground">{t('review.timeSpent')}</p>
                   <p className={`font-semibold ${
                     isWithinTimeLimit ? 'text-success' : 'text-warning'
                   }`}>
@@ -142,11 +144,11 @@ const EssayReview = ({ essay, question, feedback, onNewEssay, onBack }: EssayRev
                   </p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Target Words</p>
+                  <p className="text-muted-foreground">{t('review.targetWords')}</p>
                   <p className="font-semibold">{question.wordLimit}+</p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Time Limit</p>
+                  <p className="text-muted-foreground">{t('review.timeLimit')}</p>
                   <p className="font-semibold">{question.timeLimit}m</p>
                 </div>
               </div>
@@ -158,12 +160,12 @@ const EssayReview = ({ essay, question, feedback, onNewEssay, onBack }: EssayRev
                   {essay.wordCount >= question.wordLimit ? (
                     <>
                       <CheckCircle className="w-4 h-4 text-success" />
-                      <span className="text-success">Word count requirement met</span>
+                      <span className="text-success">{t('review.wordCountMet')}</span>
                     </>
                   ) : (
                     <>
                       <AlertTriangle className="w-4 h-4 text-warning" />
-                      <span className="text-warning">Below minimum word count</span>
+                      <span className="text-warning">{t('review.belowMinimum')}</span>
                     </>
                   )}
                 </div>
@@ -171,12 +173,12 @@ const EssayReview = ({ essay, question, feedback, onNewEssay, onBack }: EssayRev
                   {isWithinTimeLimit ? (
                     <>
                       <CheckCircle className="w-4 h-4 text-success" />
-                      <span className="text-success">Completed within time limit</span>
+                      <span className="text-success">{t('review.withinTimeLimit')}</span>
                     </>
                   ) : (
                     <>
                       <AlertTriangle className="w-4 h-4 text-warning" />
-                      <span className="text-warning">Exceeded time limit</span>
+                      <span className="text-warning">{t('review.exceededTimeLimit')}</span>
                     </>
                   )}
                 </div>
@@ -192,19 +194,19 @@ const EssayReview = ({ essay, question, feedback, onNewEssay, onBack }: EssayRev
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Target className="w-5 h-5" />
-                Band Score Breakdown
+                {t('review.bandScoreBreakdown')}
               </CardTitle>
               <CardDescription>
-                IELTS Writing Task assessment criteria
+                {t('review.ieltsWritingCriteria')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {Object.entries(finalFeedback.scores).map(([criteria, score]) => {
                 const criteriaNames = {
-                  taskResponse: "Task Response",
-                  coherenceCohesion: "Coherence & Cohesion", 
-                  lexicalResource: "Lexical Resource",
-                  grammaticalAccuracy: "Grammatical Accuracy"
+                  taskResponse: t('review.taskResponse'),
+                  coherenceCohesion: t('review.coherenceCohesion'),
+                  lexicalResource: t('review.lexicalResource'),
+                  grammaticalAccuracy: t('review.grammaticalAccuracy')
                 };
                 
                 return (
@@ -227,7 +229,7 @@ const EssayReview = ({ essay, question, feedback, onNewEssay, onBack }: EssayRev
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2 text-success">
                 <CheckCircle className="w-5 h-5" />
-                Strengths
+                {t('review.strengths')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -247,7 +249,7 @@ const EssayReview = ({ essay, question, feedback, onNewEssay, onBack }: EssayRev
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2 text-warning">
                 <AlertTriangle className="w-5 h-5" />
-                Areas for Improvement
+                {t('review.improvements')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -267,7 +269,7 @@ const EssayReview = ({ essay, question, feedback, onNewEssay, onBack }: EssayRev
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2 text-primary">
                 <Lightbulb className="w-5 h-5" />
-                Study Suggestions
+                {t('review.suggestions')}
               </CardTitle>
             </CardHeader>
             <CardContent>
