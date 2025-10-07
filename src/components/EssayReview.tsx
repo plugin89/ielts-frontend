@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, FileText, Clock, Target, CheckCircle, AlertTriangle, BookOpen, Lightbulb } from "lucide-react";
 import { Question, Essay, EssayFeedback } from "@/pages/Index";
+import EssayContent from "@/components/EssayContent";
 
 interface EssayReviewProps {
   essay: Essay;
@@ -281,22 +282,8 @@ const EssayReview = ({ essay, question, feedback, onNewEssay, onBack }: EssayRev
             </CardContent>
           </Card>
 
-          {/* Your Essay */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Your Essay</CardTitle>
-              <CardDescription>
-                Review your response - {question.title}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="bg-muted/50 p-4 rounded-lg max-h-96 overflow-y-auto">
-                <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                  {essay.content}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Essay Content - AI-powered text simplification */}
+          <EssayContent essayContent={essay.content} />
         </div>
       </div>
     </div>
