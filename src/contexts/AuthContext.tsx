@@ -2,6 +2,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 interface AuthContextType {
   currentUser: User | null;
   login: () => Promise<void>;
@@ -25,7 +27,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+
+      // Get ID token and sync with backend
+      const idToken = await user.getIdToken();
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/sync`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${idToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          console.error('Failed to sync user with backend:', response.statusText);
+        } else {
+          console.log('User synced successfully with backend');
+        }
+      } catch (syncError) {
+        console.error('Error syncing user with backend:', syncError);
+        // Don't throw error here - allow login to succeed even if sync fails
+      }
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
