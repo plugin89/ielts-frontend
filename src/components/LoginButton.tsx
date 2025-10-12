@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { LogIn, LogOut, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,26 +16,10 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export function LoginButton() {
   const { currentUser, login, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const fetchUserProfile = async () => {
-    try {
-      const token = await currentUser?.getIdToken();
-      const response = await fetch(`${API_BASE_URL}/users/me/profile`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch profile");
-      }
-
-      const profile = await response.json();
-      console.log("User profile:", profile);
-      // TODO: Display profile information in a dialog or navigate to profile page
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    }
+  const handleMyPageClick = () => {
+    navigate("/my-page");
   };
 
   if (currentUser) {
@@ -58,9 +43,9 @@ export function LoginButton() {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={fetchUserProfile}>
+          <DropdownMenuItem onClick={handleMyPageClick}>
             <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
+            <span>My page</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={logout}>
