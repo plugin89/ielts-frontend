@@ -1,0 +1,38 @@
+{
+  "past": [
+    {
+      "id": "p1a-charts",
+      "title": "Sales Data Analysis",
+      "description": "The chart shows the sales figures for three different product categories over a 12-month period. Summarize the information by selecting and reporting the main features.",
+      "timeLimit": 20,
+      "wordLimit": 150,
+      "type": "Bar Chart"
+    },
+    {
+      "id": "p1a-process",
+      "title": "Coffee Production Process",
+      "description": "The diagram illustrates the process of coffee production from bean to cup. Describe the process shown in the diagram.",
+      "timeLimit": 20,
+      "wordLimit": 150,
+      "type": "Process Diagram"
+    }
+  ],
+  "mock": [
+    {
+      "id": "p1a-table",
+      "title": "University Enrollment Statistics",
+      "description": "The table shows the number of students enrolled in different university programs between 2019 and 2023. Summarize the key trends.",
+      "timeLimit": 20,
+      "wordLimit": 150,
+      "type": "Table"
+    },
+    {
+      "id": "p1a-map",
+      "title": "Town Development Plans",
+      "description": "The maps show the changes planned for a town center. Compare the current layout with the proposed changes.",
+      "timeLimit": 20,
+      "wordLimit": 150,
+      "type": "Maps"
+    }
+  ]
+}

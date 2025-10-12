@@ -1,0 +1,38 @@
+{
+  "past": [
+    {
+      "id": "p2-opinion",
+      "title": "Technology and Education",
+      "description": "Some people believe that technology has made learning easier and more effective. Others argue that traditional teaching methods are still the best. Discuss both views and give your own opinion.",
+      "timeLimit": 40,
+      "wordLimit": 250,
+      "type": "Opinion Essay"
+    },
+    {
+      "id": "p2-problem",
+      "title": "Urban Traffic Solutions",
+      "description": "Traffic congestion in cities is becoming a major problem. What are the causes of this issue and what solutions can you suggest?",
+      "timeLimit": 40,
+      "wordLimit": 250,
+      "type": "Problem/Solution"
+    }
+  ],
+  "mock": [
+    {
+      "id": "p2-advantages",
+      "title": "Working from Home",
+      "description": "More and more people are working from home rather than in offices. What are the advantages and disadvantages of this trend?",
+      "timeLimit": 40,
+      "wordLimit": 250,
+      "type": "Advantages/Disadvantages"
+    },
+    {
+      "id": "p2-discussion",
+      "title": "Environmental Protection vs Economic Growth",
+      "description": "Some people think environmental protection should be the priority, while others believe economic development is more important. Discuss both sides and give your opinion.",
+      "timeLimit": 40,
+      "wordLimit": 250,
+      "type": "Discussion"
+    }
+  ]
+}

@@ -4,9 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, FileText, BarChart3, Plus } from "lucide-react";
 import { WritingPart, Question } from "@/pages/Index";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Textarea } from "@/components/ui/textarea";
+import { loadQuestions } from "@/utils/questionLoader";
 
 interface QuestionListProps {
   part: WritingPart;
@@ -28,116 +29,14 @@ const QuestionList = ({ part, onQuestionSelect, onPartSelect }: QuestionListProp
     part2: []
   });
 
-  const questions = {
-    part1_general_past: [
-      {
-        id: "p1g-letter1",
-        title: "Complaint Letter",
-        description: "You recently purchased a product online, but it arrived damaged. Write a letter to the company complaining about the issue and requesting a replacement or refund.",
-        timeLimit: 20,
-        wordLimit: 150,
-        type: "Formal Letter"
-      },
-      {
-        id: "p1g-letter2",
-        title: "Request Letter",
-        description: "You are planning to visit a friend in another country. Write a letter to your friend requesting information about the best time to visit and asking for suggestions on places to see.",
-        timeLimit: 20,
-        wordLimit: 150,
-        type: "Informal Letter"
-      }
-    ],
-    part1_general_mock: [
-      {
-        id: "p1g-letter3",
-        title: "Invitation Letter",
-        description: "You are organizing a surprise birthday party for a colleague. Write a letter to other colleagues inviting them to the party and providing details about the event.",
-        timeLimit: 20,
-        wordLimit: 150,
-        type: "Semi-formal Letter"
-      },
-      {
-        id: "p1g-letter4",
-        title: "Apology Letter",
-        description: "You borrowed a book from a friend but accidentally damaged it. Write a letter apologizing for the damage and offering to replace or repair the book.",
-        timeLimit: 20,
-        wordLimit: 150,
-        type: "Informal Letter"
-      }
-    ],
-    part1_academic_past: [
-      {
-        id: "p1a-charts",
-        title: "Sales Data Analysis",
-        description: "The chart shows the sales figures for three different product categories over a 12-month period. Summarize the information by selecting and reporting the main features.",
-        timeLimit: 20,
-        wordLimit: 150,
-        type: "Bar Chart"
-      },
-      {
-        id: "p1a-process",
-        title: "Coffee Production Process",
-        description: "The diagram illustrates the process of coffee production from bean to cup. Describe the process shown in the diagram.",
-        timeLimit: 20,
-        wordLimit: 150,
-        type: "Process Diagram"
-      }
-    ],
-    part1_academic_mock: [
-      {
-        id: "p1a-table",
-        title: "University Enrollment Statistics",
-        description: "The table shows the number of students enrolled in different university programs between 2019 and 2023. Summarize the key trends.",
-        timeLimit: 20,
-        wordLimit: 150,
-        type: "Table"
-      },
-      {
-        id: "p1a-map",
-        title: "Town Development Plans",
-        description: "The maps show the changes planned for a town center. Compare the current layout with the proposed changes.",
-        timeLimit: 20,
-        wordLimit: 150,
-        type: "Maps"
-      }
-    ],
-    part2_past: [
-      {
-        id: "p2-opinion",
-        title: "Technology and Education",
-        description: "Some people believe that technology has made learning easier and more effective. Others argue that traditional teaching methods are still the best. Discuss both views and give your own opinion.",
-        timeLimit: 40,
-        wordLimit: 250,
-        type: "Opinion Essay"
-      },
-      {
-        id: "p2-problem",
-        title: "Urban Traffic Solutions",
-        description: "Traffic congestion in cities is becoming a major problem. What are the causes of this issue and what solutions can you suggest?",
-        timeLimit: 40,
-        wordLimit: 250,
-        type: "Problem/Solution"
-      }
-    ],
-    part2_mock: [
-      {
-        id: "p2-advantages",
-        title: "Working from Home",
-        description: "More and more people are working from home rather than in offices. What are the advantages and disadvantages of this trend?",
-        timeLimit: 40,
-        wordLimit: 250,
-        type: "Advantages/Disadvantages"
-      },
-      {
-        id: "p2-discussion",
-        title: "Environmental Protection vs Economic Growth",
-        description: "Some people think environmental protection should be the priority, while others believe economic development is more important. Discuss both sides and give your opinion.",
-        timeLimit: 40,
-        wordLimit: 250,
-        type: "Discussion"
-      }
-    ]
-  };
+  // Load questions from JSON files based on the selected part
+  const questions = useMemo(() => {
+    const data = loadQuestions(part);
+    return {
+      [`${part}_past`]: data.past,
+      [`${part}_mock`]: data.mock
+    };
+  }, [part]);
 
   const partInfo = {
     part1: {
@@ -341,10 +240,10 @@ const QuestionList = ({ part, onQuestionSelect, onPartSelect }: QuestionListProp
                 <TabsTrigger value="mock">{t('questions.mock')}</TabsTrigger>
               </TabsList>
               <TabsContent value="past">
-                {renderQuestionList(questions.part1_general_past, true)}
+                {renderQuestionList(questions[`${part}_past`], true)}
               </TabsContent>
               <TabsContent value="mock">
-                {renderQuestionList(questions.part1_general_mock, true)}
+                {renderQuestionList(questions[`${part}_mock`], true)}
               </TabsContent>
             </Tabs>
           ) : part === "part1_academic" ? (
@@ -354,10 +253,10 @@ const QuestionList = ({ part, onQuestionSelect, onPartSelect }: QuestionListProp
                 <TabsTrigger value="mock">{t('questions.mock')}</TabsTrigger>
               </TabsList>
               <TabsContent value="past">
-                {renderQuestionList(questions.part1_academic_past, true)}
+                {renderQuestionList(questions[`${part}_past`], true)}
               </TabsContent>
               <TabsContent value="mock">
-                {renderQuestionList(questions.part1_academic_mock, true)}
+                {renderQuestionList(questions[`${part}_mock`], true)}
               </TabsContent>
             </Tabs>
           ) : (
@@ -367,10 +266,10 @@ const QuestionList = ({ part, onQuestionSelect, onPartSelect }: QuestionListProp
                 <TabsTrigger value="mock">{t('questions.mock')}</TabsTrigger>
               </TabsList>
               <TabsContent value="past">
-                {renderQuestionList(questions.part2_past, true)}
+                {renderQuestionList(questions[`${part}_past`], true)}
               </TabsContent>
               <TabsContent value="mock">
-                {renderQuestionList(questions.part2_mock, true)}
+                {renderQuestionList(questions[`${part}_mock`], true)}
               </TabsContent>
             </Tabs>
           )}

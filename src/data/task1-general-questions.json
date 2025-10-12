@@ -1,0 +1,38 @@
+{
+  "past": [
+    {
+      "id": "p1g-letter1",
+      "title": "Complaint Letter",
+      "description": "You recently purchased a product online, but it arrived damaged. Write a letter to the company complaining about the issue and requesting a replacement or refund.",
+      "timeLimit": 20,
+      "wordLimit": 150,
+      "type": "Formal Letter"
+    },
+    {
+      "id": "p1g-letter2",
+      "title": "Request Letter",
+      "description": "You are planning to visit a friend in another country. Write a letter to your friend requesting information about the best time to visit and asking for suggestions on places to see.",
+      "timeLimit": 20,
+      "wordLimit": 150,
+      "type": "Informal Letter"
+    }
+  ],
+  "mock": [
+    {
+      "id": "p1g-letter3",
+      "title": "Invitation Letter",
+      "description": "You are organizing a surprise birthday party for a colleague. Write a letter to other colleagues inviting them to the party and providing details about the event.",
+      "timeLimit": 20,
+      "wordLimit": 150,
+      "type": "Semi-formal Letter"
+    },
+    {
+      "id": "p1g-letter4",
+      "title": "Apology Letter",
+      "description": "You borrowed a book from a friend but accidentally damaged it. Write a letter apologizing for the damage and offering to replace or repair the book.",
+      "timeLimit": 20,
+      "wordLimit": 150,
+      "type": "Informal Letter"
+    }
+  ]
+}
